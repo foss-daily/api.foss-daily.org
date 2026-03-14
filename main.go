@@ -16,6 +16,8 @@ var statsDir = func() string {
 	return "/tmp/stats"
 }()
 
+var version = "dev"
+
 func main() {
 	mux := http.NewServeMux()
 	initGeo()
@@ -51,6 +53,7 @@ func main() {
 	mux.HandleFunc("/healthz", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 	})
+	mux.Handle("/v1/version", lightLimiter.middleware(http.HandlerFunc(versionHandler)))
 	srv := &http.Server{
 		Addr:           ":6969",
 		Handler:        secureHeaders(mux),

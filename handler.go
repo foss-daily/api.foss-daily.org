@@ -19,6 +19,15 @@ var (
 	bwMu        sync.Mutex
 )
 
+func versionHandler(w http.ResponseWriter, r *http.Request) {
+    if r.Method != http.MethodGet {
+        http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
+        return
+    }
+    w.Header().Set("Content-Type", "text/plain")
+    fmt.Fprint(w, version)
+}
+
 func uuidHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {
 		http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
