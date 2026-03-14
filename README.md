@@ -71,7 +71,7 @@ Exceeding limits returns `429 Too Many Requests`.
 ## Self-Hosting
 
 ### Requirements
-- Go 1.21+
+- Go 1.25+
 - FreeBSD or Linux
 - MaxMind GeoLite2 databases (free, requires account at maxmind.com)
 
@@ -79,7 +79,7 @@ Exceeding limits returns `429 Too Many Requests`.
 ```sh
 git clone https://gitea.foss-daily.org/foss-daily/api.foss-daily.org
 cd api.foss-daily.org
-make or gmake if your on FreeBSD
+make or gmake if you're on FreeBSD
 ```
 
 ### Environment Variables
@@ -91,7 +91,7 @@ make or gmake if your on FreeBSD
 | `FOSS_DAILY_IP_HEADER` | `X-Forwarded-For` | Header to read real IP from |
 | `FOSS_DAILY_IFACE` | `em0` | Network interface for bandwidth stats |
 | `FOSS_DAILY_RESOLVE_HOSTNAME` | `0` | Set to `1` to enable reverse DNS (adds latency) |
-| `FOSS_DAILY_PROD` | `0` | Set to `1` to enable production-only foss-daily.org endponts (fully optional) |
+| `FOSS_DAILY_PROD` | `0` | Set to `1` to enable production-only foss-daily.org endpoints (fully optional) |
 
 ### Run
 ```sh
@@ -105,3 +105,7 @@ Listens on `:6969` by default.
 ## Geo Data
 
 Powered by [MaxMind GeoLite2](https://dev.maxmind.com/geoip/geolite2-free-geolocation-data).
+
+## Compatibility
+
+Tested on FreeBSD and Linux. Other BSDs or systems may work but are untested.
