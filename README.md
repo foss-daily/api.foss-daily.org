@@ -1,5 +1,7 @@
 # api.foss-daily.org
 
+![Gitea Last Commit](https://img.shields.io/gitea/last-commit/foss-daily/api.foss-daily.org?display_timestamp=committer&gitea_url=https%3A%2F%2Fgitea.foss-daily.org&style=plastic)
+
 Free, self-hostable multi-purpose REST API. No auth, no tracking, no bullshit.
 
 Built in Go.
