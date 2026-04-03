@@ -1,0 +1,28 @@
+<!doctype html>
+<html>
+<head>
+    <title>foss-daily API</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+</head>
+<body>
+<div id="app"></div>
+<script src="https://cdn.jsdelivr.net/npm/@scalar/api-reference"></script>
+<script>
+Scalar.createApiReference('#app', {
+    url: '/v1/swagger',
+    hideModels: true,
+    hideDarkModeToggle: true,
+    expandAllResponses: true,
+    hideClientButton: true,
+    telemetry: false,
+    withDefaultFonts: false,
+    defaultOpenFirstTag: true,
+    layout: 'modern',
+    theme: 'default',
+    showSidebar: false,
+    showDeveloperTools: "never",
+})
+</script>
+</body>
+</html>

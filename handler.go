@@ -11,7 +11,11 @@ import (
 	"strings"
 	"sync"
 	"time"
+    _ "embed"
 )
+
+//go:embed docs/swagger.json
+var swaggerJSON []byte
 
 var (
 	bwCache     []byte
@@ -19,6 +23,18 @@ var (
 	bwMu        sync.Mutex
 )
 
+type iface struct {
+	Name  string `json:"name"`
+	Today string `json:"today"`
+	Month string `json:"month"`
+	Year  string `json:"year"`
+}
+
+// @Summary Get API version
+// @Produce plain
+// @Success 200 {string} string "version string"
+// @Failure 405 {string} string "method not allowed"
+// @Router /version [get]
 func versionHandler(w http.ResponseWriter, r *http.Request) {
     if r.Method != http.MethodGet {
         http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
@@ -28,6 +44,11 @@ func versionHandler(w http.ResponseWriter, r *http.Request) {
     fmt.Fprint(w, version)
 }
 
+// @Summary Generate UUID v4
+// @Produce plain
+// @Success 200 {string} string "uuid"
+// @Failure 405 {string} string "method not allowed"
+// @Router /uuid [get]
 func uuidHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {
 		http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
@@ -42,6 +63,11 @@ func uuidHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprint(w, uuid)
 }
 
+// @Summary Get your IP
+// @Produce plain
+// @Success 200 {string} string "ip address"
+// @Failure 405 {string} string "method not allowed"
+// @Router /me [get]
 func ipHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {
 		http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
@@ -51,6 +77,11 @@ func ipHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprint(w, realIP(r))
 }
 
+// @Summary Echo your request headers
+// @Produce plain
+// @Success 200 {string} string "headers"
+// @Failure 405 {string} string "method not allowed"
+// @Router /echo [get]
 func headerHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {
 		http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
@@ -77,7 +108,19 @@ func headerHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// @Summary Get bandwidth stats
+// @Produce json
+// @Param plain query string false "set 1 for human readable"
+// @Success 200 {object} iface
+// @Failure 404 {string} string "Disabled"
+// @Failure 405 {string} string "method not allowed"
+// @Failure 500 {string} string "internal server error"
+// @Router /bandwidth [get]
 func bandwidthHandler(w http.ResponseWriter, r *http.Request) {
+	if !env("FOSS_DAILY_PROD") {
+        http.Error(w, "Disabled", http.StatusNotFound)
+        return
+    }
 	ifaceName := os.Getenv("FOSS_DAILY_IFACE")
 	if ifaceName == "" {
 		ifaceName = "em0"
@@ -110,13 +153,6 @@ func bandwidthHandler(w http.ResponseWriter, r *http.Request) {
 	if err := json.Unmarshal(out, &raw); err != nil {
 		http.Error(w, "internal server error", http.StatusInternalServerError)
 		return
-	}
-
-	type iface struct {
-		Name  string `json:"name"`
-		Today string `json:"today"`
-		Month string `json:"month"`
-		Year  string `json:"year"`
 	}
 
 	interfaces, _ := raw["interfaces"].([]any)
@@ -154,4 +190,36 @@ func bandwidthHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.Header().Set("X-Cache-Age", fmt.Sprintf("%ds", int(time.Since(bwCacheTime).Seconds())))
 	json.NewEncoder(w).Encode(result)
+}
+
+// @Summary Get OpenAPI spec
+// @Produce json
+// @Success 200
+// @Failure 405 {string} string "method not allowed"
+// @Router /swagger [get]
+func swaggerHandler(w http.ResponseWriter, r *http.Request) {
+    if r.Method != http.MethodGet {
+        http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
+        return
+    }
+    w.Header().Set("Content-Type", "application/json")
+    w.Write(swaggerJSON)
+}
+
+// @Summary Bandwidth usage graph
+// @Produce png
+// @Success 200 {file} binary
+// @Failure 404 {string} string "Disabled"
+// @Failure 405 {string} string "method not allowed"
+// @Router /usage [get]
+func usageHandler(w http.ResponseWriter, r *http.Request) {
+    if !env("FOSS_DAILY_PROD") {
+        http.Error(w, "Disabled", http.StatusNotFound)
+        return
+    }
+	if r.Method != http.MethodGet {
+        http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
+        return
+    }
+    serve("overall.png")(w, r)
 }

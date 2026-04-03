@@ -16,7 +16,6 @@ _test
 
 # Goland's output filename can not be set manually
 /go_build_*
-/gitea_*
 
 # MS VSCode
 .vscode
@@ -54,9 +53,6 @@ cpu.out
 *.log
 *.log.*.gz
 
-/gitea
-/gitea-e2e
-/gitea-vet
 /debug
 /integrations.test
 
@@ -69,7 +65,6 @@ cpu.out
 /log
 /public/assets/img/avatar
 /tests/e2e-output
-/tests/integration/gitea-integration-*
 /tests/integration/indexers-*
 /tests/*.ini
 /tests/**/*.git/**/*.sample
@@ -90,8 +85,6 @@ cpu.out
 # Files and folders that were previously generated
 /public/assets/img/webpack
 
-# Snapcraft
-/gitea_a*.txt
 snap/.snapcraft/
 parts/
 stage/
@@ -124,3 +117,6 @@ prime/
 
 # A Makefile for custom make targets
 Makefile.local
+
+api
+docs/

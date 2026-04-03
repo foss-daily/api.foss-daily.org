@@ -3,6 +3,7 @@ SUDO := $(shell command -v doas 2>/dev/null || command -v sudo 2>/dev/null)
 .PHONY: build install clean
 
 build:
+	swag init
 	CGO_ENABLED=0 GOARCH=amd64 go build -ldflags="-s -w -X main.version=$(shell git rev-parse --short HEAD)" -trimpath -o api .
 
 install: build

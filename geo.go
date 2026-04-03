@@ -198,6 +198,15 @@ func lookupGeo(ipStr string) (*GeoResponse, error) {
 	return resp, nil
 }
 
+// @Summary Geo lookup
+// @Produce json
+// @Param ip path string true "IP address or 'me'"
+// @Success 200 {object} GeoResponse
+// @Failure 503 {string} string "geo endpoint unavailable"
+// @Failure 405 {string} string "method not allowed"
+// @Failure 400 {string} string "invalid ip"
+// @Failure 404 {string} string "unknown field"
+// @Router /geo/{ip} [get]
 func geoHandler(w http.ResponseWriter, r *http.Request) {
 	if !geoEnabled {
 		http.Error(w, "geo endpoint unavailable", http.StatusServiceUnavailable)
@@ -256,6 +265,15 @@ func geoHandler(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(geo)
 }
 
+// @Summary Batch geo lookup
+// @Accept json
+// @Produce json
+// @Param ips body []string true "List of IPs"
+// @Success 200 {object} map[string]GeoResponse
+// @Failure 503 {string} string "geo endpoint unavailable"
+// @Failure 405 {string} string "method not allowed"
+// @Failure 400 {string} string "bad request"
+// @Router /geo/batch [post]
 func geoBatchHandler(w http.ResponseWriter, r *http.Request) {
 	if !geoEnabled {
 		http.Error(w, "geo endpoint unavailable", http.StatusServiceUnavailable)
