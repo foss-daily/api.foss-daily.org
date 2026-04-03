@@ -1,0 +1,10 @@
+name: Test
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: alma-9
+    steps:
+      - uses: actions/checkout@v6
+      - run: make
