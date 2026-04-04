@@ -6,6 +6,10 @@ Free, self-hostable multi-purpose REST API. No auth, no tracking, no bullshit.
 
 Built in Go.
 
+## Docs
+
+Interactive API docs available at [api.foss-daily.org/docs](https://api.foss-daily.org/docs).
+
 ## Endpoints
 
 ### `GET /v1/me`
