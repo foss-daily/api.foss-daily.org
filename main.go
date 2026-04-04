@@ -57,6 +57,10 @@ func main() {
 	})
 	mux.Handle("/v1/version", lightLimiter.middleware(http.HandlerFunc(versionHandler)))
 	mux.Handle("/v1/swagger", lightLimiter.middleware(http.HandlerFunc(swaggerHandler)))
+	mux.HandleFunc("/robots.txt", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "text/plain")
+		w.Write([]byte("User-agent: *\nDisallow: /\n"))
+	})
 	srv := &http.Server{
 		Addr:           ":6969",
 		Handler:        secureHeaders(mux),

@@ -23,6 +23,7 @@ func secureHeaders(next http.Handler) http.Handler {
 		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 		w.Header().Set("Referrer-Policy", "no-referrer")
 		w.Header().Set("Permissions-Policy", "interest-cohort=()")
+		w.Header().Set("X-Robots-Tag", "noindex, nofollow")
 		r.Body = http.MaxBytesReader(w, r.Body, 32*1024)
 		if r.Method == http.MethodOptions {
 			w.WriteHeader(http.StatusNoContent)
